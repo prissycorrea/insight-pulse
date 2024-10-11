@@ -1,46 +1,32 @@
 "use client";
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Hook do Next.js para redirecionar
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../../firebase-config'; // Importa Firestore
-import { doc, getDoc } from 'firebase/firestore'; // Importa funções do Firestore
-import Link from 'next/link';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase-config';
+import { useRouter } from 'next/navigation';
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();  // Hook do Next.js para redirecionar o usuário
+  const router = useRouter();  // Para redirecionar o usuário após cadastro
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     try {
-      // Autentica o usuário no Firebase Authentication
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Verifica se o usuário existe na coleção 'users' do Firestore
-      const userDocRef = doc(db, "users", user.uid); // Referência do documento no Firestore
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (userDocSnap.exists()) {
-        console.log("Usuário encontrado:", userDocSnap.data());
-        // Redireciona para a página de feedback após o login bem-sucedido
-        router.push("/dashboard");
-      } else {
-        // Se o usuário não for encontrado na coleção 'users'
-        setError("Usuário não encontrado, registre-se primeiro.");
-      }
-
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Usuário registrado:", userCredential.user);
+      
+      // Redireciona o usuário para a página de login após o registro bem-sucedido
+      router.push("/login");
     } catch (error) {
-      console.error("Erro de login:", error);
-      setError("Erro ao fazer login. Verifique suas credenciais e tente novamente.");
+      console.error("Erro ao registrar:", error);
+      setError("Erro ao registrar. Verifique as informações e tente novamente.");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Registrar</h1>
 
         {error && <p className="text-center text-red-500 mb-4">{error}</p>}
 
@@ -74,17 +60,11 @@ export default function Login() {
 
         <div className="flex items-center justify-between">
           <button 
-            onClick={handleLogin}
+            onClick={handleRegister}
             className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
           >
-            Entrar
+            Registrar
           </button>
-        </div>
-
-        <div className="mt-4 text-center">
-          <Link href="/register" className="text-blue-500 hover:text-blue-700 font-bold focus:outline-none">
-            Não tem conta? Registre-se aqui
-          </Link>
         </div>
       </div>
     </div>
