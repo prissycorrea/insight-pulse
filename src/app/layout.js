@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { auth } from '../firebase-config';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import './globals.css';
+import Image from 'next/image';
 
 export default function RootLayout({ children }) {
   const [user, setUser] = useState(null);
@@ -44,38 +45,39 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-screen flex flex-col bg-gray-100">
         {/* Menu de navegação */}
-        <header className="bg-blue-600 text-white p-4 flex justify-between items-center">
-          <nav className="space-x-4">
-            <Link href="/dashboard" className="hover:underline">Dashboard</Link>
-            <Link href="/sendfeedback" className="hover:underline">Enviar Feedback</Link>
-          </nav>
+        <header className="bg-blue-700 text-white p-4 shadow-md">
+          <div className="container mx-auto flex justify-between items-center">
+            {/* Logo à esquerda */}
+            <div className="flex items-center space-x-4">
+            <Image src="/img/logo.png" alt="Logo" width={50} height={50} className="w-10 h-10" />              
+            <nav className="hidden md:flex space-x-8">
+                <Link href="/dashboard" className="text-white hover:text-gray-300 transition-colors duration-300">
+                  Dashboard
+                </Link>
+                <Link href="/sendfeedback" className="text-white hover:text-gray-300 transition-colors duration-300">
+                  Enviar Feedback
+                </Link>
+              </nav>
+            </div>
 
-          {/* Exibe o e-mail do usuário logado no canto superior direito */}
-          <div className="relative">
-            {user ? (
-              <div className="relative">
-                <button 
-                  className="text-sm focus:outline-none" 
-                  onClick={() => setMenuOpen(!menuOpen)}
-                >
-                  {user.email}
-                </button>
-                {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                    <button 
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={handleLogout}
-                    >
-                      Sair
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <Link href="/login" className="hover:underline">
-                Entrar
-              </Link>
-            )}
+            {/* Exibe o e-mail do usuário logado no canto superior direito */}
+            <div className="relative">
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="hidden sm:inline text-sm">{user.email}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-transform duration-300 transform hover:scale-105 focus:outline-none"
+                  >
+                    Sair
+                  </button>
+                </div>
+              ) : (
+                <Link href="/login" className="hover:underline text-white">
+                  Entrar
+                </Link>
+              )}
+            </div>
           </div>
         </header>
 
