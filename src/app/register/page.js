@@ -1,15 +1,15 @@
 "use client";
 import { useState } from 'react';
-import { auth, db } from '../../firebase-config'; // Importa o Firestore e Auth
+import { auth, db } from '../../firebase-config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore'; // Importa funções necessárias para Firestore
-import { useRouter } from 'next/navigation'; // Importa o useRouter do Next.js
+import { doc, setDoc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // Adiciona o campo nome
-  const router = useRouter(); // Instância do roteador para navegação
+  const [name, setName] = useState("");
+  const router = useRouter();
 
   const handleRegister = async () => {
     try {
@@ -26,8 +26,8 @@ export default function Register() {
 
       console.log("Usuário registrado com sucesso e salvo no Firestore!");
 
-      // Redireciona o usuário para o dashboard após o registro
-      router.push('/dashboard');
+      // Redireciona o usuário para o login após o registro
+      router.push('/login');
     } catch (error) {
       console.error("Erro ao registrar:", error);
     }

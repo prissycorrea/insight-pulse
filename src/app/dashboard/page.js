@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getDocs, collection, query, where } from 'firebase/firestore';
-import { auth, db } from '../../firebase-config'; // Importa o Firestore e a autenticação do Firebase
+import { auth, db } from '../../firebase-config';
 import { onAuthStateChanged } from 'firebase/auth';
 import Layout from '../layout';
 
@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [user, setUser] = useState(null); // Estado para armazenar o usuário logado
+  const [user, setUser] = useState(null);
 
   // Função para buscar os feedbacks no Firestore relacionados ao e-mail do usuário logado
   const fetchFeedbacks = async (userEmail) => {
@@ -59,11 +59,6 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
         <h1 className="text-2xl font-bold mb-6 text-center">Feedbacks Recebidos</h1>
-        
-        {/* Exibe o e-mail do usuário logado */}
-        {user && (
-          <p className="text-center mb-4">Logado como: {user.email}</p>
-        )}
 
         {loading ? (
           <p className="text-center">Carregando feedbacks...</p>

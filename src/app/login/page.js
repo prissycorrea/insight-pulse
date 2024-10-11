@@ -1,16 +1,16 @@
 "use client";
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Hook do Next.js para redirecionar
+import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../../firebase-config'; // Importa Firestore
-import { doc, getDoc } from 'firebase/firestore'; // Importa funções do Firestore
+import { auth, db } from '../../firebase-config';
+import { doc, getDoc } from 'firebase/firestore';
 import Link from 'next/link';
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();  // Hook do Next.js para redirecionar o usuário
+  const router = useRouter();
 
   const handleLogin = async () => {
     try {

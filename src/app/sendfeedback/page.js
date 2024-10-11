@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../../firebase-config';  // Importa o Firestore e as configurações do Firebase
+import { auth, db } from '../../firebase-config';
 import axios from 'axios';
 import Layout from '../layout';
 
@@ -27,18 +27,21 @@ export default function SendFeedback() {
         }
       );
       const sentiment = response.data.documentSentiment;
-      if (sentiment.score > 0) {
+   
+      // Ajuste de limiar para definir quando é neutro
+      if (sentiment.score > 0.1) {
         return "positivo";
-      } else if (sentiment.score < 0) {
+      } else if (sentiment.score < -0.1) {
         return "negativo";
       } else {
-        return "neutro";
+        return "neutro";  // Pontuações próximas de 0 serão tratadas como neutras
       }
     } catch (error) {
       console.error("Erro ao analisar o sentimento:", error);
       return "neutro";  // Retorna "neutro" em caso de erro
     }
-  };
+   };
+   
 
   // Função para enviar o feedback
   const handleSendFeedback = async () => {
@@ -88,6 +91,7 @@ export default function SendFeedback() {
           onChange={(e) => setReceiverId(e.target.value)}
           placeholder="ID do destinatário"
           className="w-full mb-4 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          required
         />
 
         <textarea
@@ -95,6 +99,7 @@ export default function SendFeedback() {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Escreva seu feedback"
           className="w-full h-40 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          required
         ></textarea>
 
         <button
