@@ -1,16 +1,15 @@
 "use client";
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { auth } from '../firebase-config';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
-import './globals.css';
-import Image from 'next/image';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { auth } from "../firebase-config";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion"; // Importa os componentes para animação
+import "./globals.css";
 
 export default function RootLayout({ children }) {
   const [user, setUser] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   // Verifica se o usuário está logado
@@ -19,11 +18,10 @@ export default function RootLayout({ children }) {
       if (user) {
         setUser(user);
       } else {
-        setUser(null); // Se o usuário não está logado, o estado é nulo
+        setUser(null);
       }
     });
 
-    // Cleanup ao desmontar o componente
     return () => unsubscribe();
   }, []);
 
@@ -31,8 +29,7 @@ export default function RootLayout({ children }) {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      setMenuOpen(false);
-      router.push('/login');
+      router.push("/login");
     } catch (error) {
       console.error("Erro ao sair:", error);
     }
@@ -45,46 +42,52 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-screen flex flex-col bg-gray-100">
         {/* Menu de navegação */}
-        <header className="bg-blue-700 text-white p-4 shadow-md">
-          <div className="container mx-auto flex justify-between items-center">
-            {/* Logo à esquerda */}
-            <div className="flex items-center space-x-4">
-            <Image src="/img/logo.png" alt="Logo" width={50} height={50} className="w-10 h-10" />              
-            <nav className="hidden md:flex space-x-8">
-                <Link href="/dashboard" className="text-white hover:text-gray-300 transition-colors duration-300">
-                  Dashboard
-                </Link>
-                <Link href="/sendfeedback" className="text-white hover:text-gray-300 transition-colors duration-300">
-                  Enviar Feedback
-                </Link>
-              </nav>
-            </div>
+        <header className="bg-blue-600 text-white p-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <img src="/img/logo.png" alt="Logo" width={50} height={50} />
+            <nav className="ml-4 space-x-4">
+              <Link href="/dashboard" className="hover:underline">
+                Dashboard
+              </Link>
+              <Link href="/sendfeedback" className="hover:underline">
+                Enviar Feedback
+              </Link>
+            </nav>
+          </div>
 
-            {/* Exibe o e-mail do usuário logado no canto superior direito */}
-            <div className="relative">
-              {user ? (
-                <div className="flex items-center space-x-4">
-                  <span className="hidden sm:inline text-sm">{user.email}</span>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-transform duration-300 transform hover:scale-105 focus:outline-none"
-                  >
-                    Sair
-                  </button>
-                </div>
-              ) : (
-                <Link href="/login" className="hover:underline text-white">
-                  Entrar
-                </Link>
-              )}
-            </div>
+          {/* Exibe o e-mail do usuário logado no canto superior direito */}
+          <div>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm">{user.email}</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none"
+                >
+                  Sair
+                </button>
+              </div>
+            ) : (
+              <Link href="/login" className="hover:underline">
+                Entrar
+              </Link>
+            )}
           </div>
         </header>
 
-        {/* Conteúdo da página */}
-        <main className="flex-grow p-8">
-          {children}
-        </main>
+        {/* Adiciona a animação ao conteúdo principal */}
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={router.asPath}
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
+            transition={{ duration: 0.5 }}
+            className="flex-grow p-8"
+          >
+            {children}
+          </motion.main>
+        </AnimatePresence>
       </body>
     </html>
   );
