@@ -195,7 +195,7 @@ export default function SendFeedback() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Escreva seu feedback"
-                className="w-full h-40 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+                className="w-full h-40 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 resize-none"
                 required
               ></textarea>
 
