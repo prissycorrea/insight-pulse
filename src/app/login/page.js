@@ -38,39 +38,40 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900"> {/* Aqui adicionamos o dark:bg-gray-900 */}
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-md w-full"> {/* Aqui também */}
         <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
 
         {error && <p className="text-center text-red-500 mb-4">{error}</p>}
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-            Email
-          </label>
-          <input 
-            type="email" 
-            id="email" 
-            placeholder="Digite seu email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          />
-        </div>
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="email">
+          Email
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          placeholder="Digite seu email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800" // Adicione dark:text-gray-200 e dark:bg-gray-800
+        />
+      </div>
 
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-            Senha
-          </label>
-          <input 
-            type="password" 
-            id="password" 
-            placeholder="Digite sua senha" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          />
-        </div>
+      <div className="mb-6">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="password">
+          Senha
+        </label>
+        <input 
+          type="password" 
+          id="password" 
+          placeholder="Digite sua senha" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800" // Adicione dark:text-gray-200 e dark:bg-gray-800
+        />
+      </div>
+
 
         <div className="flex items-center justify-between">
           <button 

@@ -56,9 +56,9 @@ export default function RootLayout({ children }) {
       <head>
         <title>Insight Pulse - Feedback Inteligente</title>
       </head>
-      <body className={`${theme} min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-gray-200`}>
+      <body className={`${theme} min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-gray-200 transition-colors`}>
         {/* Menu de navegação */}
-        <header className="bg-blue-600 dark:bg-gray-800 text-white p-4 flex justify-between items-center shadow-lg">
+        <header className="bg-blue-600 dark:bg-blue-800 text-white p-4 flex justify-between items-center shadow-lg">
           {/* Logo à esquerda */}
           <div className="flex items-center">
             <Image src="/img/logo.png" width={50} height={50} alt="Logo" />
@@ -75,7 +75,7 @@ export default function RootLayout({ children }) {
           {/* Alternância de tema */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 focus:outline-none"
+            className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 focus:outline-none transition-colors"
             aria-label="Toggle Theme"
           >
             {theme === 'light' ? <FaMoon className="text-gray-800" /> : <FaSun className="text-yellow-400" />}
@@ -102,7 +102,7 @@ export default function RootLayout({ children }) {
         </header>
 
         {/* Conteúdo da página */}
-        <main className="flex-grow p-8 bg-gray-100 dark:bg-gray-800 transition-colors">
+        <main className="flex-grow p-8 bg-gray-100 dark:bg-gray-900 transition-colors">
           {children}
         </main>
       </body>

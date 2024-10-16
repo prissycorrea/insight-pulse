@@ -83,8 +83,8 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-3xl">
           <h1 className="text-2xl font-bold mb-6 text-center">Feedbacks Recebidos</h1>
 
           {loading ? (
@@ -96,10 +96,10 @@ export default function Dashboard() {
           ) : (
             <ul className="space-y-4">
               {feedbacks.map((feedback, index) => (
-                <li key={index} className="p-4 bg-gray-50 rounded-lg shadow-md">
+                <li key={index} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md">
                   <p>{feedback.message}</p>
                   <p className="text-sm mt-2">De: {feedback.senderName}</p>
-                  <p className="text-sm mt-1 text-gray-500">Enviado em: {feedback.createdAt}</p>
+                  <p className="text-sm mt-1 text-gray-500 dark:text-gray-300">Enviado em: {feedback.createdAt}</p>
                   <p
                     className={`mt-2 text-sm ${
                       feedback.sentimentScore === "positivo"

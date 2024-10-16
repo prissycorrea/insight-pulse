@@ -5,8 +5,8 @@ import { addDoc, collection, serverTimestamp, getDocs } from 'firebase/firestore
 import { auth, db } from '../../firebase-config';
 import axios from 'axios';
 import Layout from '../layout';
-import { FaStar } from 'react-icons/fa';  // Importa o ícone de estrela
-import { motion } from 'framer-motion';  // Para animação de feedback visual
+import { FaStar } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 export default function SendFeedback() {
   const [message, setMessage] = useState("");
@@ -22,7 +22,7 @@ export default function SendFeedback() {
   const [responsibility, setResponsibility] = useState(0);
   const [creativity, setCreativity] = useState(0);
 
-  const GOOGLE_API_KEY = "SUA_CHAVE_GOOGLE_API";
+  const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 
   const analyzeSentiment = async (text) => {
     try {
@@ -153,8 +153,8 @@ export default function SendFeedback() {
 
   return (
     <Layout>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-md w-full">
           <h1 className="text-2xl font-bold mb-6 text-center">Enviar Feedback</h1>
 
           {status && (
@@ -180,7 +180,7 @@ export default function SendFeedback() {
               <select
                 value={receiverId}
                 onChange={(e) => setReceiverId(e.target.value)}
-                className="w-full mb-4 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+                className="w-full mb-4 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-gray-200"
                 required
               >
                 <option value="">Selecione um destinatário</option>
@@ -195,7 +195,7 @@ export default function SendFeedback() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Escreva seu feedback"
-                className="w-full h-40 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 resize-none"
+                className="w-full h-40 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 resize-none dark:bg-gray-700 dark:text-gray-200"
                 required
               ></textarea>
 
