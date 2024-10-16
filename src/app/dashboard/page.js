@@ -1,4 +1,4 @@
-"use client"; // Este componente também precisa ser um Client Component
+"use client"; // Este componente precisa ser um Client Component
 
 import { useState, useEffect } from "react";
 import { getDocs, collection, query, where, doc, getDoc } from "firebase/firestore";
@@ -17,6 +17,12 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
+  
+  // Filtros
+  const [filter, setFilter] = useState({
+    sentiment: '',
+    date: '',
+  });
 
   // Função para buscar o nome do remetente com base no senderId
   const fetchSenderName = async (senderId) => {
@@ -32,8 +38,6 @@ export default function Dashboard() {
   // Função para buscar os feedbacks no Firestore relacionados ao e-mail do usuário logado
   const fetchFeedbacks = async (userEmail) => {
     try {
-      console.log("Buscando feedbacks para o usuário com e-mail:", userEmail);
-
       const feedbacksCollection = collection(db, "feedbacks");
       const feedbacksQuery = query(
         feedbacksCollection,
@@ -55,7 +59,6 @@ export default function Dashboard() {
             };
           })
         );
-        console.log("Feedbacks retornados:", feedbackList);
         setFeedbacks(feedbackList);
       }
     } catch (error) {
@@ -102,75 +105,112 @@ export default function Dashboard() {
     ],
   };
 
-  const formatFileName = () => {
-    const date = new Date();
-    const formattedDate = date.toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
-    return `feedback_${formattedDate}`;
-  };
+// Função para exportar feedbacks em CSV
+const exportToCSV = (feedbacks) => {
+  const formattedFeedbacks = feedbacks.map(feedback => ({
+    Feedback: feedback.message,
+    Sentimento: feedback.sentimentScore,
+    "Enviado por": feedback.senderName,
+    "Enviado em": feedback.createdAt,
+    "Recebido por": user?.email, // Substitua por receiverId se necessário
+  }));
   
-  // Função para exportar feedbacks em CSV
-  const exportToCSV = (feedbacks) => {
-    const csv = Papa.unparse(feedbacks);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${formatFileName()}.csv`); // Usando a função para o nome do arquivo
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-  
-  
-  // Função para exportar feedbacks em PDF
-  const exportToPDF = (feedbacks) => {
-    const doc = new jsPDF();
-    doc.text("Feedbacks Recebidos", 20, 20);
-    
-    feedbacks.forEach((feedback, index) => {
-      const text = `${index + 1}. ${feedback.message} - De: ${feedback.senderName} - Enviado em: ${feedback.createdAt} - Sentimento: ${feedback.sentimentScore}`;
-      doc.text(text, 20, 30 + (10 * index));
-    });
-  
-    doc.save(`${formatFileName()}.pdf`); // Usando a função para o nome do arquivo
-  };
-  
-  
+  const csv = Papa.unparse(formattedFeedbacks);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `feedback_${new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-')}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Função para exportar feedbacks em PDF
+const exportToPDF = (feedbacks) => {
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text(`Feedbacks Recebidos por ${user.email}`, 20, 20); // Nome do usuário que recebeu os feedbacks
+  doc.setFontSize(12);
+
+  let yPosition = 40; // Posição inicial
+
+  feedbacks.forEach((feedback, index) => {
+    // Adiciona informações do feedback
+    doc.setFontSize(14);
+    doc.text(`Recebido de: ${feedback.senderName}`, 20, yPosition);
+    doc.text(`Recebido em: ${feedback.createdAt}`, 20, yPosition + 10);
+    doc.setFontSize(12);
+    doc.text(feedback.message, 20, yPosition + 30);
+    doc.text(`Sentimento: ${feedback.sentimentScore}`, 20, yPosition + 40);
+    doc.line(10, yPosition + 45, 200, yPosition + 45); // Linha horizontal separadora
+
+    // Atualiza a posição Y
+    yPosition += 60; // Espaço entre feedbacks
+
+    // Verifica se a posição Y ultrapassa o limite da página
+    if (yPosition > 250) { // Limite Y para a página
+      doc.addPage(); // Adiciona nova página
+      yPosition = 20; // Reseta a posição Y para o topo da nova página
+    }
+  });
+
+  doc.save(`feedback_${new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-')}.pdf`);
+};
+
+
+  // Filtrando feedbacks
+  const filteredFeedbacks = feedbacks.filter(feedback => {
+    const matchesSentiment = filter.sentiment ? feedback.sentimentScore === filter.sentiment : true;
+    const matchesDate = filter.date ? feedback.createdAt.includes(filter.date) : true; // Filtra pela data
+    return matchesSentiment && matchesDate;
+  });
 
   return (
     <Layout>
-      
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
         <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-3xl">
           <h1 className="text-2xl font-bold mb-6 text-center">Feedbacks Recebidos</h1>
 
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300">Filtrar por sentimento:</label>
+            <select 
+              value={filter.sentiment} 
+              onChange={(e) => setFilter({ ...filter, sentiment: e.target.value })} 
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-gray-200"
+            >
+              <option value="">Todos</option>
+              <option value="positivo">Positivo</option>
+              <option value="negativo">Negativo</option>
+              <option value="neutro">Neutro</option>
+            </select>
+          </div>
 
-        <button
-          onClick={() => exportToCSV(feedbacks)} // Chame a função aqui
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none mb-4"
-        >
-          Exportar como CSV
-        </button>
+          <button
+            onClick={() => exportToCSV(feedbacks)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none mb-4"
+          >
+            Exportar como CSV
+          </button>
 
-        <button
-          onClick={() => exportToPDF(feedbacks)} // Chame a função aqui
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none mb-4"
-        >
-          Exportar como PDF
-        </button>
+          <button
+            onClick={() => exportToPDF(filteredFeedbacks)} // Exporta apenas os feedbacks filtrados
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none mb-4"
+          >
+            Exportar como PDF
+          </button>
 
           {loading ? (
             <p className="text-center">Carregando feedbacks...</p>
           ) : error ? (
             <p className="text-center text-red-500">{error}</p>
-          ) : feedbacks.length === 0 ? (
+          ) : filteredFeedbacks.length === 0 ? (
             <p className="text-center">Nenhum feedback disponível no momento.</p>
           ) : (
             <>
               <Bar data={chartData} />
               <ul className="space-y-4 mt-6">
-                {feedbacks.map((feedback, index) => (
+                {filteredFeedbacks.map((feedback, index) => (
                   <li key={index} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md">
                     <p>{feedback.message}</p>
                     <p className="text-sm mt-2">De: {feedback.senderName}</p>
