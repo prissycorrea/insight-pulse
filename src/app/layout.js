@@ -61,7 +61,9 @@ export default function RootLayout({ children }) {
         <header className="bg-blue-600 dark:bg-blue-800 text-white p-4 flex justify-between items-center shadow-lg">
           {/* Logo à esquerda */}
           <div className="flex items-center">
-            <Image src="/img/logo.png" width={50} height={50} alt="Logo" />
+            <Link href="/">
+              <Image src="/img/logo.png" width={50} height={50} alt="Logo" />
+            </Link>
             <nav className="ml-4 space-x-4">
               <Link href="/dashboard" className="hover:underline dark:hover:text-blue-400 transition-colors">
                 Dashboard

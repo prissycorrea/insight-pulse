@@ -66,21 +66,18 @@ export default function Dashboard() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("Usuário autenticado:", user.email, "ID:", user.uid);
-        // Se o usuário está autenticado, salva o usuário no estado e busca os feedbacks
         setUser(user);
-        fetchFeedbacks(user.email); // Carrega os feedbacks pelo e-mail do usuário logado
+        fetchFeedbacks(user.email);
       } else {
-        console.log("Nenhum usuário autenticado.");
-        setError("Você precisa estar logado para ver seus feedbacks.");
-        setLoading(false);
+        setUser(null);
       }
+      setLoading(false); // Garanta que o loading seja falso no final
     });
-
-    // Cleanup ao desmontar o componente
+  
     return () => unsubscribe();
   }, []);
-
+  
+  
   return (
     <Layout>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
