@@ -168,8 +168,8 @@ const exportToPDF = (feedbacks) => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-3xl">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-3xl mx-auto mt-8">
           <h1 className="text-2xl font-bold mb-6 text-center">Feedbacks Recebidos</h1>
 
           <div className="mb-4">
