@@ -39,8 +39,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-md w-full">
+    <div className="min-h-[80vh] sm:min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 py-4 sm:py-2">
+    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-md w-full mt-[-100px]">
         <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
 
         {error && <p className="text-center text-red-500 mb-4">{error}</p>}

@@ -6,24 +6,24 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import './globals.css';
 import Image from 'next/image';
-import { FaMoon, FaSun } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
+import { RiSunFill, RiMoonClearFill} from "react-icons/ri";
 
 export default function RootLayout({ children }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [theme, setTheme] = useState('light'); // Estado para controlar o tema
+  const [theme, setTheme] = useState('light');
   const router = useRouter();
 
-  // Verifica se o usuário está logado
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
       } else {
-        setUser(null); // Se o usuário não está logado, o estado é nulo
+        setUser(null);
       }
     });
 
-    // Define o tema ao carregar a página
     const storedTheme = localStorage.getItem('theme') || 'light';
     setTheme(storedTheme);
     document.documentElement.classList.add(storedTheme);
@@ -31,16 +31,14 @@ export default function RootLayout({ children }) {
     return () => unsubscribe();
   }, []);
 
-  // Função para alternar entre o tema claro e escuro
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     document.documentElement.classList.remove(theme);
     document.documentElement.classList.add(newTheme);
-    localStorage.setItem('theme', newTheme); // Armazena o tema no localStorage
+    localStorage.setItem('theme', newTheme);
   };
 
-  // Função para realizar o logout
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -56,54 +54,81 @@ export default function RootLayout({ children }) {
         <title>Insight Pulse - Feedback Inteligente</title>
       </head>
       <body className={`${theme} min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-gray-200 transition-colors`}>
-        {/* Menu de navegação */}
-        <header className="bg-blue-600 dark:bg-blue-800 text-white p-4 flex justify-between items-center shadow-lg">
-          {/* Logo à esquerda */}
-          <div className="flex items-center">
-            <Link href="/">
-              <Image src="/img/logo.png" width={50} height={50} alt="Logo" />
-            </Link>
-            <nav className="ml-4 space-x-4">
-              <Link href="/dashboard" className="hover:underline dark:hover:text-blue-400 transition-colors">
-                Dashboard
-              </Link>
-              <Link href="/sendfeedback" className="hover:underline dark:hover:text-blue-400 transition-colors">
-                Enviar Feedback
-              </Link>
-            </nav>
-          </div>
+      <header className="bg-blue-600 dark:bg-blue-800 text-white p-4 flex justify-between items-center shadow-lg">
+          {/* Logo */}
+          <Link href="/">
+            <Image src="/img/logo.png" width={50} height={50} alt="Logo" />
+          </Link>
 
-          {/* Alternância de tema */}
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 focus:outline-none transition-colors"
-              aria-label="Toggle Theme"
-            >
-              {theme === 'light' ? <FaMoon className="text-gray-800" /> : <FaSun className="text-yellow-400" />}
-            </button>
-          </div>
-          {/* Exibe o e-mail do usuário logado no canto superior direito */}
-          <div>
-            {user ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm dark:text-gray-300">{user.email}</span>
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none transition-colors"
-                >
-                  Sair
-                </button>
-              </div>
-            ) : (
-              <Link href="/login" className="hover:underline dark:hover:text-blue-400 transition-colors">
-                Entrar
-              </Link>
-            )}
-          </div>
+          {/* Botão hamburguer - Removido md:hidden para aparecer em todas as telas */}
+          <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
+
+          {/* Menu de navegação */}
+          <nav className={`
+            ${isMenuOpen ? 'block' : 'hidden'} 
+            flex-col
+            absolute
+            top-16
+            right-0
+            w-full md:w-80
+            bg-blue-600 dark:bg-blue-800 
+            p-4
+            space-y-4
+            z-50
+            shadow-lg
+            items-center
+            rounded-bl-lg
+          `}>
+            <Link href="/dashboard" className="block hover:underline dark:hover:text-blue-400 transition-colors">
+              Dashboard
+            </Link>
+            <Link href="/sendfeedback" className="block hover:underline dark:hover:text-blue-400 transition-colors">
+              Enviar Feedback
+            </Link>
+            
+            {/* Switch de tema */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={toggleTheme}
+                className="relative inline-flex items-center h-8 rounded-full w-16 transition-colors focus:outline-none"
+                style={{
+                  backgroundColor: theme === 'light' ? '#CBD5E0' : '#1a365d'
+                }}
+              >
+                <RiSunFill className={`absolute left-2 text-yellow-400 ${theme === 'light' ? 'opacity-100' : 'opacity-40'}`} size={14} />
+                <RiMoonClearFill className={`absolute right-2 text-gray-800 ${theme === 'dark' ? 'opacity-100' : 'opacity-40'}`} size={14} />
+                <span
+                  className={`
+                    inline-block w-6 h-6 transform bg-white rounded-full transition-transform duration-200 ease-in-out
+                    ${theme === 'light' ? 'translate-x-1' : 'translate-x-9'}
+                  `}
+                />
+              </button>
+            </div>
+
+            {/* Informações do usuário */}
+            <div className="border-t border-blue-500 dark:border-blue-700 pt-4 mt-4">
+              {user ? (
+                <div className="flex flex-col items-center space-y-3">
+                  <span className="text-sm dark:text-gray-300">{user.email}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none transition-colors"
+                  >
+                    Sair
+                  </button>
+                </div>
+              ) : (
+                <Link href="/login" className="block hover:underline dark:hover:text-blue-400 transition-colors">
+                  Entrar
+                </Link>
+              )}
+            </div>
+          </nav>
         </header>
 
-        {/* Conteúdo da página */}
         <main className="flex-grow p-8 bg-gray-100 dark:bg-gray-900 transition-colors">
           {children}
         </main>
