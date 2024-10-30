@@ -1,13 +1,12 @@
-"use client"; // Define que o layout é um componente client-side
-
+"use client";
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { auth } from '../firebase-config';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import './globals.css'; // Importa os estilos globais
+import './globals.css';
 import Image from 'next/image';
-import { FaMoon, FaSun } from 'react-icons/fa'; // Importa ícones de sol e lua para o botão de tema
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 export default function RootLayout({ children }) {
   const [user, setUser] = useState(null);
