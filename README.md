@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# InsightPulse - Feedback Inteligente
+![Status do Projeto](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 
-## Getting Started
+## Descrição
 
-First, run the development server:
+O InsightPulse é uma aplicação web que permite que usuários enviem e recebam feedbacks de forma eficiente e intuitiva. A plataforma conta com um sistema de autenticação, envio de e-mails de confirmação, exportação de feedbacks em formatos CSV e PDF, além de gráficos que representam visualmente os dados de feedback. Um recurso adicional é a análise de sentimento dos feedbacks, que utiliza a API do Google para classificar os sentimentos como positivo, negativo ou neutro.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Tecnologias Utilizadas
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Frontend:** React, Next.js, Tailwind CSS
+- **Backend:** Firebase (Firestore, Authentication)
+- **Gráficos:** Chart.js, react-chartjs-2
+- **Animações:** framer-motion
+- **Exportação de Dados:** Papa Parse, jsPDF
+- **Requisições HTTP:** axios
+- **Análise de Sentimento:** Google Cloud Natural Language API
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Funcionalidades
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Cadastro de Usuário:** Usuários podem se registrar com e-mail e senha. Um e-mail de confirmação é enviado para validar o cadastro.
+- **Login:** Usuários podem fazer login na aplicação após confirmar o e-mail.
+- **Envio de Feedbacks:** Usuários podem enviar feedbacks para outros usuários.
+- **Visualização de Feedbacks:** Feedbacks recebidos são exibidos em uma lista, com informações sobre o remetente, data e sentimento.
+- **Filtros:** Possibilidade de filtrar feedbacks por data e sentimento (positivo, negativo, neutro).
+- **Análise de Sentimento:** Classificação dos feedbacks como positivo, negativo ou neutro usando a API do Google.
+- **Gráficos:** Visualização gráfica dos feedbacks recebidos.
+- **Exportação de Dados:** Exportação dos feedbacks em formato CSV ou PDF.
