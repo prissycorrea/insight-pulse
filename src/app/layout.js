@@ -74,14 +74,15 @@ export default function RootLayout({ children }) {
           </div>
 
           {/* Alternância de tema */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 focus:outline-none transition-colors"
-            aria-label="Toggle Theme"
-          >
-            {theme === 'light' ? <FaMoon className="text-gray-800" /> : <FaSun className="text-yellow-400" />}
-          </button>
-
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 focus:outline-none transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'light' ? <FaMoon className="text-gray-800" /> : <FaSun className="text-yellow-400" />}
+            </button>
+          </div>
           {/* Exibe o e-mail do usuário logado no canto superior direito */}
           <div>
             {user ? (
