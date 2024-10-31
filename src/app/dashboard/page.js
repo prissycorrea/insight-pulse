@@ -159,12 +159,29 @@ const exportToPDF = (feedbacks) => {
 };
 
 
-  // Filtrando feedbacks
+  // Filtro feedbacks
   const filteredFeedbacks = feedbacks.filter(feedback => {
     const matchesSentiment = filter.sentiment ? feedback.sentimentScore === filter.sentiment : true;
-    const matchesDate = filter.date ? feedback.createdAt.includes(filter.date) : true; // Filtra pela data
-    return matchesSentiment && matchesDate;
+  
+    // Converter a string de data do feedback para o formato correto
+    const feedbackDateParts = feedback.createdAt.split(',')[0].split('/'); // Divide a data em partes, ignorando a hora
+    const feedbackDate = new Date(`${feedbackDateParts[2]}-${feedbackDateParts[1]}-${feedbackDateParts[0]}`); // Formato YYYY-MM-DD
+
+    //console.log("Data do feedback:", feedback.createdAt, "Data convertida:", feedbackDate);
+  
+    // Filtrar por mês e ano se estiverem selecionados
+    const matchesMonth = filter.month 
+      ? feedbackDate.getMonth() === parseInt(filter.month) - 1 // Ajuste para o mês baseado em zero
+      : true;
+    const matchesYear = filter.year 
+      ? feedbackDate.getFullYear() === parseInt(filter.year) 
+      : true;
+  
+    //console.log("Matches Sentiment:", matchesSentiment, "Matches Month:", matchesMonth, "Matches Year:", matchesYear);
+  
+    return matchesSentiment && matchesMonth && matchesYear;
   });
+  
 
   return (
     <Layout>
@@ -185,7 +202,42 @@ const exportToPDF = (feedbacks) => {
               <option value="neutro">Neutro</option>
             </select>
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300">Filtrar por mês:</label>
+            <select 
+              value={filter.month} 
+              onChange={(e) => setFilter({ ...filter, month: e.target.value })} 
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-gray-200"
+            >
+              <option value="">Todos os meses</option>
+              <option value="1">Janeiro</option>
+              <option value="2">Fevereiro</option>
+              <option value="3">Março</option>
+              <option value="4">Abril</option>
+              <option value="5">Maio</option>
+              <option value="6">Junho</option>
+              <option value="7">Julho</option>
+              <option value="8">Agosto</option>
+              <option value="9">Setembro</option>
+              <option value="10">Outubro</option>
+              <option value="11">Novembro</option>
+              <option value="12">Dezembro</option>
+            </select>
+          </div>
 
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300">Filtrar por ano:</label>
+            <select 
+              value={filter.year} 
+              onChange={(e) => setFilter({ ...filter, year: e.target.value })} 
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-gray-200"
+            >
+              <option value="">Todos os anos</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+            </select>
+          </div>
           <button
             onClick={() => exportToCSV(feedbacks)}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none mb-4"
