@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { addDoc, collection, serverTimestamp, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../firebase-config';
 import axios from 'axios';
@@ -9,6 +10,7 @@ import { FaStar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 export default function SendFeedback() {
+  const router = useRouter();
   const [message, setMessage] = useState("");
   const [receiverId, setReceiverId] = useState(""); 
   const [status, setStatus] = useState("");
@@ -23,7 +25,25 @@ export default function SendFeedback() {
   const [creativity, setCreativity] = useState(0);
 
   const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+  
+  // Adicione esta verificação de autenticação
+  useEffect(() => {
+    const checkAuth = () => {
+      if (!auth.currentUser) {
+        router.push('/login'); // ou qualquer outra rota de login que você tenha
+      }
+    };
 
+    checkAuth();
+    // Adicionar um listener para mudanças no estado de autenticação
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        router.push('/login');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
   const analyzeSentiment = async (text) => {
     try {
       const response = await axios.post(
